@@ -62,13 +62,11 @@ export default function HomePage() {
     return (
         <div className="container">
             
-            {/* 1. Оновлення за сьогодні (Головна горизонтальна стрічка) */}
             <h2>Оновлення за сьогодні</h2>
             <div className="section-grid top-updates-grid">
                 {data.newUpdates.map(book => <BookCard key={book._id} book={book} />)}
             </div>
             
-            {/* 2. Бічні секції (Зараз читають, Набирає популярність, Популярне) */}
             <div className="index-sections">
                 <div className="section-block">
                     <h3>Зараз читають</h3> 
