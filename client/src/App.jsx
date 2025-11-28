@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Link } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import AdminBookForm from './pages/AdminBookForm';
+
+const Header = () => {
+    const { user, logout } = useAuth();
+    return (
+        <header className="header">
+            <div className="header-left">
+                <span className="header-logo">Library</span>
+                <nav className="main-nav">
+                    <Link to="/">Каталог</Link>
+                </nav>
+            </div>
+            <div className="header-right" style={{display:'flex', gap:'10px'}}>
+                {user ? (
+                    <>
+                        <span style={{color:'white'}}>Привіт, {user.role}</span>
+                        {user.role === 'admin' && (
+                            <Link to="/admin/add" className="btn-login">Додати книгу</Link>
+                        )}
+                        <button onClick={logout} className="btn-register">Вихід</button>
+                    </>
+                ) : (
+                    <>
+                        {/* ✅ ДОДАНО: Кнопка Реєстрації */}
+                        <Link to="/login" className="btn-login">Вхід</Link>
+                        <Link to="/register" className="btn-register">Реєстрація</Link> 
+                    </>
+                )}
+            </div>
+        </header>
+    );
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <AuthProvider>
+            <div className="app">
+                <Header />
+                
+                <Routes>
+                    {/* Публічні маршрути */}
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/book/:id" element={<div>Сторінка книги (TODO)</div>} />
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+                    {/* Захищені маршрути (Тільки Адмін) */}
+                    <Route element={<ProtectedRoute requiredRole="admin" />}>
+                        <Route path="/admin/add" element={<AdminBookForm />} />
+                        <Route path="/admin/edit/:id" element={<AdminBookForm />} />
+                    </Route>
+                </Routes>
+            </div>
+        </AuthProvider>
+    );
 }
 
-export default App
+export default App;
