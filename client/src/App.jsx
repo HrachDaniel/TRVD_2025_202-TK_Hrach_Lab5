@@ -27,7 +27,6 @@ const Header = () => {
                     </>
                 ) : (
                     <>
-                        {/* ✅ ДОДАНО: Кнопка Реєстрації */}
                         <Link to="/login" className="btn-login">Вхід</Link>
                         <Link to="/register" className="btn-register">Реєстрація</Link> 
                     </>
@@ -44,13 +43,10 @@ function App() {
                 <Header />
                 
                 <Routes>
-                    {/* Публічні маршрути */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/book/:id" element={<div>Сторінка книги (TODO)</div>} />
-
-                    {/* Захищені маршрути (Тільки Адмін) */}
                     <Route element={<ProtectedRoute requiredRole="admin" />}>
                         <Route path="/admin/add" element={<AdminBookForm />} />
                         <Route path="/admin/edit/:id" element={<AdminBookForm />} />
